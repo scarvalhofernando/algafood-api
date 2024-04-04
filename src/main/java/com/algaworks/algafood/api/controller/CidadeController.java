@@ -18,10 +18,10 @@ import java.util.List;
 public class CidadeController {
 
     @Autowired
-    public CadastroCidadeService cadastroCidade;
+    private CadastroCidadeService cadastroCidade;
 
     @Autowired
-    public CidadeRepository cidadeRepository;
+    private CidadeRepository cidadeRepository;
 
     @GetMapping
     public List<Cidade> listar(){
