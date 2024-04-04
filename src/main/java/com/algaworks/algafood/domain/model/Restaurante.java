@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -27,8 +28,6 @@ public class Restaurante {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-//	@NotNull
-//	@NotEmpty
 	@NotBlank
 	@Column(nullable = false)
 	private String nome;
@@ -37,7 +36,8 @@ public class Restaurante {
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
 
-//	@JsonIgnore
+	@Valid
+	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "cozinha_id", nullable = false)
 	private Cozinha cozinha;
@@ -60,7 +60,7 @@ public class Restaurante {
 	@Column(nullable = false, columnDefinition = "datetime")
 	private LocalDateTime dataAtualizacao;
 
-//	@JsonIgnore
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name = "restaurante_forma_pagamento",
 	joinColumns = @JoinColumn(name = "restaurante_id"),
