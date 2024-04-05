@@ -7,12 +7,11 @@ import com.algaworks.algafood.repository.CozinhaRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/cozinhas")
@@ -32,18 +31,11 @@ public class CozinhaController {
     @GetMapping("/{cozinhaId}")
     public Cozinha buscar(@PathVariable("cozinhaId") Long cozinhaId){
         return cadastroCozinha.buscarOuFalhar(cozinhaId);
-
-//        Optional<Cozinha> cozinha = cozinhaRepository.findById(cozinhaId);
-//        if(cozinha.isPresent()) {
-//            return ResponseEntity.ok(cozinha.get());
-//        }
-////        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        return ResponseEntity.notFound().build();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cozinha adicionar(@RequestBody Cozinha cozinha){
+    public Cozinha adicionar(@RequestBody @Valid Cozinha cozinha){
         return cadastroCozinha.salvar(cozinha);
     }
 
@@ -52,25 +44,10 @@ public class CozinhaController {
                                              @RequestBody Cozinha cozinha){
         Cozinha cozinhaAtual = cadastroCozinha.buscarOuFalhar(cozinhaId);
 
-//        cozinhaAtual.setNome(cozinha.getNome());
         BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
 
         return cadastroCozinha.salvar(cozinhaAtual);
     }
-
-//    @DeleteMapping("/{cozinhaId}")
-//    public ResponseEntity<Cozinha> remover(@PathVariable Long cozinhaId){
-//        try {
-//            cadastroCozinha.excluir(cozinhaId);
-//            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-//
-//        }catch (EntidadeNaoEncontradaException e){
-//            return ResponseEntity.notFound().build();
-//
-//        }catch (EntidadeEmUsoException e){
-//            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-//        }
-//    }
 
     @DeleteMapping("/{cozinhaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
