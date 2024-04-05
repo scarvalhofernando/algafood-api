@@ -1,7 +1,5 @@
 package com.algaworks.algafood.core.validation;
 
-import lombok.var;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.math.BigDecimal;
