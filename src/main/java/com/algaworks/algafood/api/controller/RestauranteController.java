@@ -10,9 +10,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +30,9 @@ public class RestauranteController {
 
     @Autowired
     private CadastroRestauranteService cadastroRestaurante;
+
+    @Autowired
+    private SmartValidator validator;
 
     @GetMapping
     public List<Restaurante> listar(){
@@ -62,14 +69,26 @@ public class RestauranteController {
     }
 
     @PatchMapping("/{restauranteId}")
-    public  Restaurante atualizarParcial(@PathVariable Long restauranteId,
-                                               @RequestBody Map<String, Object> campos){
+    public  Restaurante atualizarParcial(
+            @PathVariable Long restauranteId, @RequestBody Map<String, Object> campos, HttpServletRequest request){
         Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
-        merge(campos, restauranteAtual);
+
+        merge(campos, restauranteAtual, request);
+        validate(restauranteAtual, "restaurante");
+
         return atualizar(restauranteId, restauranteAtual);
     }
 
-    private void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino) {
+    private void validate(Restaurante restaurante, String object) {
+        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurante, object);
+        validator.validate(restaurante, bindingResult);
+
+        if(bindingResult.hasErrors()){
+            throw new ValidationException(String.valueOf(bindingResult));
+        }
+    }
+
+    private void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino, HttpServletRequest request) {
 
         ObjectMapper objectMapper = new ObjectMapper();
         Restaurante restauranteOrigem = objectMapper.convertValue(dadosOrigem, Restaurante.class);
