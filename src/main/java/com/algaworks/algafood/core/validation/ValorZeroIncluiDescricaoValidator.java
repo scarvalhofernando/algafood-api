@@ -4,6 +4,7 @@ import org.springframework.beans.BeanUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import javax.validation.ValidationException;
 import java.math.BigDecimal;
 
 public class ValorZeroIncluiDescricaoValidator implements ConstraintValidator<ValorZeroIncluiDescricao, Object> {
@@ -23,9 +24,21 @@ public class ValorZeroIncluiDescricaoValidator implements ConstraintValidator<Va
     public boolean isValid(Object objectoValidacao, ConstraintValidatorContext context) {
         boolean valido = true;
 
+        try {
+            BigDecimal valor = (BigDecimal) BeanUtils.getPropertyDescriptor(objectoValidacao.getClass(), valorField)
+                    .getReadMethod().invoke(objectoValidacao);
 
+            String descricao = (String) BeanUtils.getPropertyDescriptor(objectoValidacao.getClass(), descricaoField)
+                    .getReadMethod().invoke(objectoValidacao);
 
+            if (valor != null && BigDecimal.ZERO.compareTo(valor) == 0 && descricao != null){
+                valido = descricao.toLowerCase().contains(this.descricaoObrigatoria.toLowerCase());
+            }
 
-        return false;
+        } catch (Exception e){
+            throw new ValidationException(e);
+        }
+
+        return valido;
     }
 }
