@@ -6,7 +6,6 @@ import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ import javax.validation.ConstraintViolationException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CadastroCozinhaIntegrationTests {
+public class CadastroCozinhaIT {
 
     @Autowired
     private CadastroCozinhaService cadastroCozinha;
@@ -44,31 +43,31 @@ public class CadastroCozinhaIntegrationTests {
         novaCozinha = cadastroCozinha.salvar(novaCozinha);
     }
 
-//    @Test(expected = EntidadeEmUsoException.class)
-//    public void deveFalhar_QuandoExcluirCozinhaEmUso(){
-//        cadastroCozinha.excluir(1L);
-//    }
-
-//    @Test(expected = CozinhaNaoEncontradaException.class)
-//    public void deveFalhar_QuandoExcluirCozinhaInexistente(){
-//        cadastroCozinha.excluir(100L);
-//    }
-
-    @Test
+    @Test(expected = EntidadeEmUsoException.class)
     public void deveFalhar_QuandoExcluirCozinhaEmUso(){
-        EntidadeEmUsoException erroEsperado =
-                org.junit.jupiter.api.Assertions.assertThrows(EntidadeEmUsoException.class, () ->{
-                    cadastroCozinha.excluir(1L);
-                });
-        assertThat(erroEsperado).isNotNull();
+        cadastroCozinha.excluir(1L);
     }
 
-    @Test
+    @Test(expected = CozinhaNaoEncontradaException.class)
     public void deveFalhar_QuandoExcluirCozinhaInexistente(){
-        CozinhaNaoEncontradaException erroEsperado =
-                org.junit.jupiter.api.Assertions.assertThrows(CozinhaNaoEncontradaException.class, () ->{
-                    cadastroCozinha.excluir(100L);
-                });
-        assertThat(erroEsperado).isNotNull();
+        cadastroCozinha.excluir(100L);
     }
+
+//    @Test
+//    public void deveFalhar_QuandoExcluirCozinhaEmUso(){
+//        EntidadeEmUsoException erroEsperado =
+//                org.junit.jupiter.api.Assertions.assertThrows(EntidadeEmUsoException.class, () ->{
+//                    cadastroCozinha.excluir(1L);
+//                });
+//        assertThat(erroEsperado).isNotNull();
+//    }
+
+//    @Test
+//    public void deveFalhar_QuandoExcluirCozinhaInexistente(){
+//        CozinhaNaoEncontradaException erroEsperado =
+//                org.junit.jupiter.api.Assertions.assertThrows(CozinhaNaoEncontradaException.class, () ->{
+//                    cadastroCozinha.excluir(100L);
+//                });
+//        assertThat(erroEsperado).isNotNull();
+//    }
 }
