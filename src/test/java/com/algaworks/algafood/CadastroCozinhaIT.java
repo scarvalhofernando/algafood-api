@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.validation.ConstraintViolationException;
@@ -29,15 +30,15 @@ public class CadastroCozinhaIT {
     private int port;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = port;
         RestAssured.basePath = "/cozinhas";
     }
 
     @Test
-    public void deveRetornarStatus200_QuandoConsultarCozinhas(){
-            given()
+    public void deveRetornarStatus200_QuandoConsultarCozinhas() {
+        given()
                 .accept(ContentType.JSON)
                 .when()
                 .get()
@@ -46,7 +47,7 @@ public class CadastroCozinhaIT {
     }
 
     @Test
-    public void deveConter4Cozinhas_QuandoConsultarCozinhas(){
+    public void deveConter4Cozinhas_QuandoConsultarCozinhas() {
         given()
                 .accept(ContentType.JSON)
                 .when()
@@ -54,6 +55,18 @@ public class CadastroCozinhaIT {
                 .then()
                 .body("", hasSize(4))
                 .body("nome", hasItems("Indiana", "Tailandesa"));
+    }
+
+    @Test
+    public void deveRetornarStatus200_QuandoCadastrarCozinha() {
+        given()
+                .body("{ \"nome\": \"Chinesa\" }")
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .post()
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
     }
 
 // TESTE DE INTEGRAÇÃO
