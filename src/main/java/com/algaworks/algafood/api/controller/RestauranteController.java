@@ -2,8 +2,10 @@ package com.algaworks.algafood.api.controller;
 
 import com.algaworks.algafood.api.model.CozinhaDTO;
 import com.algaworks.algafood.api.model.RestauranteDTO;
+import com.algaworks.algafood.api.model.input.RestauranteInput;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import com.algaworks.algafood.repository.RestauranteRepository;
@@ -55,8 +57,9 @@ public class RestauranteController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RestauranteDTO adicionar(
-            @RequestBody @Valid Restaurante restaurante){
+            @RequestBody @Valid RestauranteInput restauranteInput){
         try {
+            Restaurante restaurante = toDomainObject(restauranteInput);
             return toDto(cadastroRestaurante.salvar(restaurante));
         } catch (CozinhaNaoEncontradaException e){
             throw new NegocioException(e.getMessage());
@@ -65,27 +68,28 @@ public class RestauranteController {
 
     @PutMapping("/{restauranteId}")
     public RestauranteDTO atualizar(@PathVariable Long restauranteId,
-                                       @RequestBody @Valid Restaurante restaurante){
-        Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
-        BeanUtils.copyProperties(restaurante, restauranteAtual,
-                        "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
+                                       @RequestBody @Valid RestauranteInput restauranteInput){
         try {
+            Restaurante restaurante = toDomainObject(restauranteInput);
+            Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
+            BeanUtils.copyProperties(restaurante, restauranteAtual,
+                        "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
             return toDto(cadastroRestaurante.salvar(restauranteAtual));
         } catch (CozinhaNaoEncontradaException e){
             throw new NegocioException(e.getMessage());
         }
     }
 
-    @PatchMapping("/{restauranteId}")
-    public RestauranteDTO atualizarParcial(
-            @PathVariable Long restauranteId, @RequestBody Map<String, Object> campos, HttpServletRequest request){
-        Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
-
-        merge(campos, restauranteAtual, request);
-        validate(restauranteAtual, "restaurante");
-
-        return atualizar(restauranteId, restauranteAtual);
-    }
+//    @PatchMapping("/{restauranteId}")
+//    public RestauranteDTO atualizarParcial(
+//            @PathVariable Long restauranteId, @RequestBody Map<String, Object> campos, HttpServletRequest request){
+//        Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
+//
+//        merge(campos, restauranteAtual, request);
+//        validate(restauranteAtual, "restaurante");
+//
+//        return atualizar(restauranteId, restauranteAtual);
+//    }
 
     private void validate(Restaurante restaurante, String object) {
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurante, object);
@@ -139,5 +143,18 @@ public class RestauranteController {
         return restaurantes.stream()
                 .map(restaurante -> toDto(restaurante))
                 .collect(Collectors.toList());
+    }
+
+    private Restaurante toDomainObject(RestauranteInput restauranteInput){
+        Restaurante restaurante = new Restaurante();
+        restaurante.setNome(restauranteInput.getNome());
+        restaurante.setTaxaFrete(restauranteInput.getTaxaFrete());
+
+        Cozinha cozinha = new Cozinha();
+        cozinha.setId(restauranteInput.getCozinha().getId());
+
+        restaurante.setCozinha(cozinha);
+
+        return restaurante;
     }
 }
