@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.assembler.RestauranteInputDisassembler;
 import com.algaworks.algafood.api.assembler.RestauranteModelAssembler;
 import com.algaworks.algafood.api.model.CozinhaDTO;
 import com.algaworks.algafood.api.model.RestauranteDTO;
@@ -46,6 +47,9 @@ public class RestauranteController {
     @Autowired
     private RestauranteModelAssembler restauranteModelAssembler;
 
+    @Autowired
+    RestauranteInputDisassembler restauranteInputDisassembler;
+
     @GetMapping
     public List<RestauranteDTO> listar(){
         return restauranteModelAssembler.toCollectionDTO(restauranteRepository.findAll());
@@ -63,7 +67,7 @@ public class RestauranteController {
     public RestauranteDTO adicionar(
             @RequestBody @Valid RestauranteInput restauranteInput){
         try {
-            Restaurante restaurante = toDomainObject(restauranteInput);
+            Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
             return restauranteModelAssembler.toDto(cadastroRestaurante.salvar(restaurante));
         } catch (CozinhaNaoEncontradaException e){
             throw new NegocioException(e.getMessage());
@@ -74,7 +78,7 @@ public class RestauranteController {
     public RestauranteDTO atualizar(@PathVariable Long restauranteId,
                                        @RequestBody @Valid RestauranteInput restauranteInput){
         try {
-            Restaurante restaurante = toDomainObject(restauranteInput);
+            Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
             Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
             BeanUtils.copyProperties(restaurante, restauranteAtual,
                         "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
