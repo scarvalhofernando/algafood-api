@@ -15,11 +15,11 @@ public class EstadoModelAssembler {
     @Autowired
     private ModelMapper modelMapper;
 
-    public EstadoDTO toDTO(Estado estado){
+    public EstadoDTO toDTO(Estado estado) {
         return modelMapper.map(estado, EstadoDTO.class);
     }
 
-    public List<EstadoDTO> toCollectionModel(List<Estado> estados){
+    public List<EstadoDTO> toCollectionModel(List<Estado> estados) {
         return estados.stream()
                 .map(estado -> toDTO(estado))
                 .collect(Collectors.toList());
