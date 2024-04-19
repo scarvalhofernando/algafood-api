@@ -10,17 +10,40 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ModelMapperConfig {
 
+//    @Bean
+//    public ModelMapper modelMapper() {
+//        var modelMapper = new ModelMapper();
+//
+////		modelMapper.createTypeMap(Restaurante.class, RestauranteModel.class)
+////			.addMapping(Restaurante::getTaxaFrete, RestauranteModel::setPrecoFrete);
+//
+//        var enderecoToEnderecoModelTypeMap = modelMapper.createTypeMap(
+//                Endereco.class, EnderecoDTO.class);
+//
+//        enderecoToEnderecoModelTypeMap.addMapping(
+//                enderecoSrc -> enderecoSrc.getCidade().getEstado().getNome(),
+//                (enderecoModelDest, value) -> enderecoModelDest.getCidade().setEstado((EstadoDTO) value));
+//
+//        return modelMapper;
+//    }
+
     @Bean
     public ModelMapper modelMapper(){
         var modelMapper = new ModelMapper();
 
-        var enderecoModelTypeMap = modelMapper.createTypeMap(
-                Endereco.class, EnderecoDTO.class);
+        // Criar um mapeamento vazio de Endereco para EnderecoDTO
+        var enderecoTypeMap = modelMapper.createTypeMap(Endereco.class, EnderecoDTO.class);
 
-        enderecoModelTypeMap.addMapping(
+        // Adicionar os mapeamentos explícitos
+        enderecoTypeMap.addMapping(
+                src -> src.getCidade().getEstado().getId(),
+                (dest, value) -> dest.getCidade().getEstado().setId((Long) value));
+
+        enderecoTypeMap.addMapping(
                 src -> src.getCidade().getEstado().getNome(),
-                (dest, value) -> dest.getCidade().setEstado((EstadoDTO) value));
+                (dest, value) -> dest.getCidade().getEstado().setNome((String) value));
 
+        // Retornar o ModelMapper configurado
         return modelMapper;
     }
 }
