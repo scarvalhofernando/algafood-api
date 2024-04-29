@@ -26,7 +26,7 @@ public class Pedido {
     private BigDecimal valorTotal;
 
     @Embedded
-    private Endereco endereco;
+    private Endereco enderecoEntrega;
 
     @Enumerated(EnumType.STRING)
     private StatusPedido status = StatusPedido.CRIADO;
@@ -50,22 +50,15 @@ public class Pedido {
     @JoinColumn(name = "usuario_cliente_id", nullable = false)
     private Usuario cliente;
 
-    @OneToMany(mappedBy = "pedido")
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens = new ArrayList<>();
 
     public void calcularValorTotal() {
+        getItens().forEach(ItemPedido::calcularPrecoTotal);
         this.subtotal = getItens().stream()
                 .map(item -> item.getPrecoTotal())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         this.valorTotal = this.subtotal.add(this.taxaFrete);
-    }
-
-    public void definirFrete() {
-        setTaxaFrete(getRestaurante().getTaxaFrete());
-    }
-
-    public void atribuirPedidoAosItens() {
-        getItens().forEach(item -> item.setPedido(this));
     }
 }
