@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -21,6 +22,8 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String codigo;
 
     private BigDecimal subtotal;
     private BigDecimal taxaFrete;
@@ -82,9 +85,14 @@ public class Pedido {
         if (getStatus().naoPodeAlterarPara(novoStatus)){
             throw new NegocioException(
                     String.format("Status do pedido %d não pode ser alterado de %s para %s",
-                            getId(), getStatus().getDescricao(),
+                            getCodigo(), getStatus().getDescricao(),
                             novoStatus.getDescricao()));
         }
         this.status = novoStatus;
+    }
+
+    @PrePersist
+    private void gerarCodigo(){
+        setCodigo(UUID.randomUUID().toString());
     }
 }
