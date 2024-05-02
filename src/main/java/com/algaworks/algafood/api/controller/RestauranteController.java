@@ -2,9 +2,9 @@ package com.algaworks.algafood.api.controller;
 
 import com.algaworks.algafood.api.assembler.RestauranteInputDisassembler;
 import com.algaworks.algafood.api.assembler.RestauranteModelAssembler;
-import com.algaworks.algafood.api.model.CozinhaDTO;
 import com.algaworks.algafood.api.model.RestauranteDTO;
 import com.algaworks.algafood.api.model.input.RestauranteInput;
+import com.algaworks.algafood.api.model.view.RestauranteView;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
@@ -14,10 +14,10 @@ import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import com.algaworks.algafood.repository.RestauranteRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -30,7 +30,6 @@ import javax.validation.ValidationException;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/restaurantes")
@@ -52,9 +51,26 @@ public class RestauranteController {
     RestauranteInputDisassembler restauranteInputDisassembler;
 
     @GetMapping
-    public List<RestauranteDTO> listar(){
-        return restauranteModelAssembler.toCollectionDTO(restauranteRepository.findAll());
+    public MappingJacksonValue listar(){
+        List<Restaurante> restaurantes = restauranteRepository.findAll();
+        List<RestauranteDTO> restauranteDTOS = restauranteModelAssembler.toCollectionDTO(restaurantes);
+
+        MappingJacksonValue restaurantesWrapper = new MappingJacksonValue(restauranteDTOS);
+        restaurantesWrapper.setSerializationView(RestauranteView.ApenasNome.class);
+
+        return restaurantesWrapper;
     }
+
+//    @GetMapping
+//    public List<RestauranteDTO> listar(){
+//        return restauranteModelAssembler.toCollectionDTO(restauranteRepository.findAll());
+//    }
+//
+//    @JsonView(RestauranteView.Resumo.class)
+//    @GetMapping(params = "projecao=resumo")
+//    public List<RestauranteDTO> listarResumido(){
+//        return listar();
+//    }
 
     @GetMapping("/{restauranteId}")
     public RestauranteDTO buscar(@PathVariable Long restauranteId){
