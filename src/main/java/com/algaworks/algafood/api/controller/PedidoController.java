@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.infrastructure.repository.spec.*;
 import com.algaworks.algafood.api.assembler.PedidoInputDisassembler;
 import com.algaworks.algafood.api.assembler.PedidoModelAssembler;
 import com.algaworks.algafood.api.assembler.PedidoResumoModelAssembler;
@@ -56,8 +57,8 @@ public class PedidoController {
 
     @GetMapping
     public List<PedidoResumoModel> pesquisar(PedidoFilter filtro) {
-        List<Pedido> todosPedidos = pedidoRepository.findAll();
-//        List<Pedido> todosPedidos = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro));
+//        List<Pedido> todosPedidos = pedidoRepository.findAll();
+        List<Pedido> todosPedidos = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro));
 
         return pedidoResumoModelAssembler.toCollectionModel(todosPedidos);
     }
