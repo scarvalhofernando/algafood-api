@@ -82,7 +82,7 @@ public class PedidoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PedidoModel adicionar(@Valid @RequestBody PedidoInput pedidoInput){
+    public PedidoModel adicionar(@Valid @RequestBody PedidoInput pedidoInput) {
         try {
             Pedido novoPedido = pedidoInputDisassembler.toDomainObject(pedidoInput);
 
@@ -93,7 +93,7 @@ public class PedidoController {
             novoPedido = emissaoPedido.emitir(novoPedido);
 
             return pedidoModelAssembler.toModel(novoPedido);
-        } catch (EntidadeNaoEncontradaException e){
+        } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }
     }
