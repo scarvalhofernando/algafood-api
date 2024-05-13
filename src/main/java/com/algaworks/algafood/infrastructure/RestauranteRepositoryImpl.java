@@ -1,7 +1,7 @@
-package com.algaworks.algafood.infrastructure.repository;
+package com.algaworks.algafood.infrastructure;
 
 import com.algaworks.algafood.domain.model.Restaurante;
-import com.algaworks.algafood.infrastructure.repository.spec.RestauranteSpecs;
+import com.algaworks.algafood.infrastructure.spec.RestauranteSpecs;
 import com.algaworks.algafood.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.algaworks.algafood.infrastructure.repository.spec.RestauranteSpecs.comFreteGratis;
+import static com.algaworks.algafood.infrastructure.spec.RestauranteSpecs.comFreteGratis;
 
 @Repository
 public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries{
