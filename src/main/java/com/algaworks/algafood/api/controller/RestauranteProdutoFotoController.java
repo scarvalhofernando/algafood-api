@@ -32,7 +32,7 @@ public class RestauranteProdutoFotoController {
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public FotoProdutoModel atualizarFoto(@PathVariable Long restauranteId,
-                                          @PathVariable Long produtoId, @Valid FotoProdutoInput fotoProdutoInput) {
+                                          @PathVariable Long produtoId, @Valid FotoProdutoInput fotoProdutoInput) throws IOException {
         Produto produto = cadastroProduto.buscarOuFalhar(restauranteId, produtoId);
 
         MultipartFile arquivo = fotoProdutoInput.getArquivo();
@@ -44,7 +44,7 @@ public class RestauranteProdutoFotoController {
         foto.setTamanho(arquivo.getSize());
         foto.setNomeArquivo(arquivo.getOriginalFilename());
 
-        FotoProduto fotoSalva = catalogoFotoProduto.salvar(foto);
+        FotoProduto fotoSalva = catalogoFotoProduto.salvar(foto, arquivo.getInputStream());
 
         return fotoProdutoModelAssembler.toModel(fotoSalva);
     }
