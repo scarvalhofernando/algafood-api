@@ -1,14 +1,16 @@
 package com.algaworks.algafood.domain.service;
 
-import com.algaworks.algafood.domain.exception.FotoProdutoNaoEncontradaException;
-import com.algaworks.algafood.domain.model.FotoProduto;
+import java.io.InputStream;
+import java.util.Optional;
+
 import com.algaworks.algafood.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
-import java.io.InputStream;
-import java.util.Optional;
+import com.algaworks.algafood.domain.exception.FotoProdutoNaoEncontradaException;
+import com.algaworks.algafood.domain.model.FotoProduto;
+import com.algaworks.algafood.domain.service.FotoStorageService.NovaFoto;
 
 @Service
 public class CatalogoFotoProdutoService {
@@ -38,7 +40,7 @@ public class CatalogoFotoProdutoService {
         foto =  produtoRepository.save(foto);
         produtoRepository.flush();
 
-        FotoStorageService.NovaFoto novaFoto = FotoStorageService.NovaFoto.builder()
+        NovaFoto novaFoto = NovaFoto.builder()
                 .nomeAquivo(foto.getNomeArquivo())
                 .inputStream(dadosArquivo)
                 .build();
