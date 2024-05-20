@@ -31,7 +31,25 @@ public interface FotoStorageService {
     class NovaFoto {
 
         private String nomeAquivo;
+        private String contentType;
         private InputStream inputStream;
+
+    }
+
+    @Builder
+    @Getter
+    class FotoRecuperada {
+
+        private InputStream inputStream;
+        private String url;
+
+        public boolean temUrl() {
+            return url != null;
+        }
+
+        public boolean temInputStream() {
+            return inputStream != null;
+        }
 
     }
 }
