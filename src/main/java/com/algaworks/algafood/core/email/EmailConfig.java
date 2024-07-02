@@ -21,7 +21,9 @@ public class EmailConfig {
                 return new FakeEnvioEmailService();
             case SMTP:
                 return new SmtpEnvioEmailService();
-            default:
+            case SANDBOX:
+                return new SandboxEnvioEmailService();
+                default:
                 return null;
         }
     }
