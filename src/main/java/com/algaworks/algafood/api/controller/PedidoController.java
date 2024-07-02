@@ -66,6 +66,7 @@ public class PedidoController {
 //        return pedidosWrapper;
 //    }
 
+    @CheckSecurity.Pedidos.PodePesquisar
     @GetMapping
     public Page<PedidoResumoModel> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
         Page<Pedido> pedidosPage = pedidoRepository.findAll(
@@ -74,10 +75,7 @@ public class PedidoController {
         List<PedidoResumoModel> pedidosResumoModel = pedidoResumoModelAssembler
                 .toCollectionModel(pedidosPage.getContent());
 
-        Page<PedidoResumoModel> pedidosResumoModelPage = new PageImpl<>(
-                pedidosResumoModel, pageable, pedidosPage.getTotalElements());
-
-        return pedidosResumoModelPage;
+        return new PageImpl<>(pedidosResumoModel, pageable, pedidosPage.getTotalElements());
     }
 
     @CheckSecurity.Pedidos.PodeBuscar
