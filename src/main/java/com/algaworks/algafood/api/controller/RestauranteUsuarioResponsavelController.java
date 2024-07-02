@@ -21,7 +21,7 @@ public class RestauranteUsuarioResponsavelController {
     @Autowired
     private UsuarioModelAssembler usuarioModelAssembler;
 
-    @CheckSecurity.Restaurantes.PodeConsultar
+    @CheckSecurity.Restaurantes.PodeGerenciarCadastro
     @GetMapping
     public List<UsuarioModel> listar(@PathVariable Long restauranteId){
         Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
@@ -29,14 +29,14 @@ public class RestauranteUsuarioResponsavelController {
         return usuarioModelAssembler.toCollectionModel(restaurante.getResponsaveis());
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarCadastro
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void desassociar(@PathVariable Long restauranteId, @PathVariable Long usuarioId){
         cadastroRestaurante.desassociarResponsavel(restauranteId, usuarioId);
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarCadastro
     @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void associar(@PathVariable Long restauranteId, @PathVariable Long usuarioId){
