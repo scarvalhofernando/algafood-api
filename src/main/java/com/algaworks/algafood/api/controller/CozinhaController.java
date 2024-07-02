@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -40,6 +41,7 @@ public class CozinhaController {
     @CheckSecurity.Cozinhas.PodeConsultar
     @GetMapping
     public Page<CozinhaDTO> listar(@PageableDefault(size = 10) Pageable pageable) {
+//        System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
         Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
 
         List<CozinhaDTO> cozinhasModel = cozinhaModelAssembler
