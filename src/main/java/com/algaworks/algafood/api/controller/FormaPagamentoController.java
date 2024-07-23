@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.assembler.FormaPagamentoInputDisassembler;
 import com.algaworks.algafood.api.assembler.FormaPagamentoModelAssembler;
 import com.algaworks.algafood.api.model.FormaPagamentoDTO;
 import com.algaworks.algafood.api.model.input.FormaPagamentoInput;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.service.CadastroFormaPagamentoService;
 import com.algaworks.algafood.repository.FormaPagamentoRepository;
@@ -30,6 +31,7 @@ public class FormaPagamentoController {
     @Autowired
     private FormaPagamentoInputDisassembler formaPagamentoInputDisassembler;
 
+    @CheckSecurity.FormasPagamento.PodeConsultar
     @GetMapping
     public List<FormaPagamentoDTO> listar() {
         List<FormaPagamento> todasFormasPagamentos = formaPagamentoRepository.findAll();
@@ -37,6 +39,7 @@ public class FormaPagamentoController {
         return formaPagamentoModelAssembler.toCollectionModel(todasFormasPagamentos);
     }
 
+    @CheckSecurity.FormasPagamento.PodeConsultar
     @GetMapping("/{formaPagamentoId}")
     public FormaPagamentoDTO buscar(@PathVariable Long formaPagamentoId) {
         FormaPagamento formaPagamento = cadastroFormaPagamento.buscarOuFalhar(formaPagamentoId);
@@ -44,6 +47,7 @@ public class FormaPagamentoController {
         return formaPagamentoModelAssembler.toDto(formaPagamento);
     }
 
+    @CheckSecurity.FormasPagamento.PodeEditar
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public FormaPagamentoDTO adicionar(@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
@@ -54,6 +58,7 @@ public class FormaPagamentoController {
         return formaPagamentoModelAssembler.toDto(formaPagamento);
     }
 
+    @CheckSecurity.FormasPagamento.PodeEditar
     @PutMapping("/{formaPagamentoId}")
     public FormaPagamentoDTO atualizar(@PathVariable Long formaPagamentoId,
                                          @RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
@@ -66,6 +71,7 @@ public class FormaPagamentoController {
         return formaPagamentoModelAssembler.toDto(formaPagamentoAtual);
     }
 
+    @CheckSecurity.FormasPagamento.PodeEditar
     @DeleteMapping("/{formaPagamentoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long formaPagamentoId) {
