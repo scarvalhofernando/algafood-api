@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.assembler.EstadoInputDisassembler;
 import com.algaworks.algafood.api.assembler.EstadoModelAssembler;
 import com.algaworks.algafood.api.model.EstadoDTO;
 import com.algaworks.algafood.api.model.input.EstadoInput;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Estado;
@@ -33,18 +34,21 @@ public class EstadoController {
     @Autowired
     private EstadoInputDisassembler estadoInputDisassembler;
 
+    @CheckSecurity.Estados.PodeConsultar
     @GetMapping
     private List<EstadoDTO> listar(){
         List<Estado> todosEstados = estadoRepository.findAll();
         return estadoModelAssembler.toCollectionModel(todosEstados);
     }
 
+    @CheckSecurity.Estados.PodeConsultar
     @GetMapping("/{estadoId}")
     public EstadoDTO buscar(@PathVariable Long estadoId){
         Estado estado = cadastroEstado.buscarOuFalhar(estadoId);
         return estadoModelAssembler.toDTO(estado);
     }
 
+    @CheckSecurity.Estados.PodeEditar
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EstadoDTO adicionar(@RequestBody @Valid EstadoInput estadoInput){
@@ -53,6 +57,7 @@ public class EstadoController {
         return estadoModelAssembler.toDTO(estado);
     }
 
+    @CheckSecurity.Estados.PodeEditar
     @PutMapping("/{estadoId}")
     public EstadoDTO atualizar(@PathVariable Long estadoId,
                                             @RequestBody @Valid EstadoInput estadoInput){
@@ -62,6 +67,7 @@ public class EstadoController {
         return estadoModelAssembler.toDTO(estadoAtual);
     }
 
+    @CheckSecurity.Estados.PodeEditar
     @DeleteMapping("/{estadoId}")
     public ResponseEntity<?> remover(@PathVariable Long estadoId){
         try {
