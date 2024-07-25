@@ -21,20 +21,25 @@ public class AlgaSecurity {
         return pedidoRepository.isPedidoGerenciadoPor(codigoPedido, getUsuarioId());
     }
 
-    public Authentication getAuthentication(){
+    public Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
-    public Long getUsuarioId(){
+    public Long getUsuarioId() {
         Jwt jwt = (Jwt) getAuthentication().getPrincipal();
 
         return jwt.getClaim("usuario_id");
     }
 
-    public boolean gerenciaRestaurante(Long restauranteId){
-        if (restauranteId == null){
+    public boolean gerenciaRestaurante(Long restauranteId) {
+        if (restauranteId == null) {
             return false;
         }
         return restauranteRepository.existsResponsavel(restauranteId, getUsuarioId());
+    }
+
+    public boolean usuarioAutenticadoIgual(Long usuarioId) {
+        return getUsuarioId() != null && usuarioId != null
+                && getUsuarioId().equals(usuarioId);
     }
 }
