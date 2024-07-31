@@ -2,6 +2,7 @@ package com.algaworks.algafood.core.openapi;
 
 import com.algaworks.algafood.api.exceptionhandler.Problem;
 import com.algaworks.algafood.api.model.*;
+import com.algaworks.algafood.api.v1.model.*;
 import com.fasterxml.classmate.TypeResolver;
 import freemarker.ext.beans.CollectionModel;
 import org.springframework.context.annotation.Bean;
